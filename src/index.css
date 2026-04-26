@@ -1,0 +1,209 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+==========================================================================
+【AI HANDOVER NOTE】
+1. DESIGN PHILOSOPHY:
+   - Mystical Occult Aesthetic: Deep cosmic purples with celestial gold accents, evoking ancient wisdom and spiritual mystery
+   - Atmospheric Depth: Layered darkness with glowing elements, creating a sense of peering into the unknown
+   - Theatrical Reveal: Card flip animations with dramatic lighting, transforming mundane interaction into ritual
+   - This style aligns with tarot's esoteric nature—users should feel they're accessing hidden knowledge, not just clicking buttons
+
+2. TYPOGRAPHY:
+   - Cinzel (display): Elegant serif with Roman capital proportions, perfect for mystical headings and card titles—conveys timeless authority
+   - Cormorant Garamond (body): Graceful oldstyle serif with high contrast, excellent readability for fortune messages while maintaining occult elegance
+   - JetBrains Mono: Used sparingly for any technical elements or timestamps, grounding the mystical in reality
+
+3. COLOR SYSTEM:
+   - Brand primary (H: 270°): Deep purple at the core, representing the third eye, intuition, and cosmic consciousness
+   - --brand maps to --primary (card backs, CTAs), --accent (gold highlights, active states), --ring (mystical glow effects)
+   - Gold accent (H: 45°): Celestial metallic gold for divine light, card borders, and interactive elements—creates luxurious contrast against deep purples
+   - Destructive (H: 0°): Deep crimson for rare warnings, success (H: 150°) for confirmation glows
+   - Dark mode is primary: background near-black (#0a0514 equivalent), with purple gradients and gold rim-lighting on cards
+
+4. USAGE GUIDE:
+   - Layout: Full-viewport centered experience, cards arranged in mystical spread pattern (arc or pentagram)
+   - Special effects: backdrop-blur on card overlays, box-shadow with gold glow (0 0 20px oklch(0.8 0.15 45)), radial gradients for starfield backgrounds
+   - Card design: Ornate borders using CSS gradients, flip animations with transform-style: preserve-3d, particle effects via canvas for stars
+   - Interaction: Hover states with subtle gold rim-light, click reveals with scale + glow, one-time-use enforced via localStorage
+   - Accessibility: Ensure gold-on-purple meets AA contrast (4.5:1), provide focus indicators with --ring color, support keyboard navigation for card selection
+==========================================================================
+*/
+
+:root {
+  /* Typography */
+  --font-sans: 'Cormorant Garamond', 'Georgia', serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  
+  /* Radius */
+  --radius: 0.5rem;
+
+  /* Core UI Tokens */
+  --background: oklch(0.98 0.01 270);
+  --foreground: oklch(0.15 0.02 270);
+  --card: oklch(0.96 0.02 270);
+  --card-foreground: oklch(0.18 0.02 270);
+  --popover: oklch(0.97 0.02 270);
+  --popover-foreground: oklch(0.15 0.02 270);
+  --primary: oklch(0.35 0.18 270);
+  --primary-foreground: oklch(0.95 0.01 270);
+  --secondary: oklch(0.88 0.03 270);
+  --secondary-foreground: oklch(0.25 0.02 270);
+  --muted: oklch(0.92 0.02 270);
+  --muted-foreground: oklch(0.45 0.02 270);
+  --accent: oklch(0.75 0.15 45);
+  --accent-foreground: oklch(0.15 0.02 270);
+  --destructive: oklch(0.55 0.22 15);
+  --destructive-foreground: oklch(0.98 0.01 270);
+  --border: oklch(0.85 0.03 270);
+  --input: oklch(0.88 0.03 270);
+  --ring: oklch(0.65 0.18 45);
+  
+  /* Chart Tokens */
+  --chart-1: oklch(0.55 0.18 270);
+  --chart-2: oklch(0.65 0.15 45);
+  --chart-3: oklch(0.45 0.16 290);
+  --chart-4: oklch(0.70 0.12 250);
+  --chart-5: oklch(0.60 0.14 30);
+  
+  /* Sidebar Tokens */
+  --sidebar: oklch(0.94 0.02 270);
+  --sidebar-foreground: oklch(0.25 0.02 270);
+  --sidebar-primary: oklch(0.35 0.18 270);
+  --sidebar-primary-foreground: oklch(0.95 0.01 270);
+  --sidebar-accent: oklch(0.75 0.15 45);
+  --sidebar-accent-foreground: oklch(0.15 0.02 270);
+  --sidebar-border: oklch(0.88 0.03 270);
+  --sidebar-ring: oklch(0.65 0.18 45);
+}
+
+.dark {
+  --background: oklch(0.08 0.04 270);
+  --foreground: oklch(0.92 0.02 270);
+  --card: oklch(0.12 0.05 270);
+  --card-foreground: oklch(0.90 0.02 270);
+  --popover: oklch(0.10 0.04 270);
+  --popover-foreground: oklch(0.92 0.02 270);
+  --primary: oklch(0.45 0.22 270);
+  --primary-foreground: oklch(0.98 0.01 270);
+  --secondary: oklch(0.20 0.06 270);
+  --secondary-foreground: oklch(0.88 0.02 270);
+  --muted: oklch(0.18 0.05 270);
+  --muted-foreground: oklch(0.60 0.03 270);
+  --accent: oklch(0.80 0.18 45);
+  --accent-foreground: oklch(0.10 0.04 270);
+  --destructive: oklch(0.50 0.25 10);
+  --destructive-foreground: oklch(0.98 0.01 270);
+  --border: oklch(0.25 0.06 270);
+  --input: oklch(0.22 0.06 270);
+  --ring: oklch(0.75 0.20 45);
+  
+  /* Chart Tokens */
+  --chart-1: oklch(0.60 0.22 270);
+  --chart-2: oklch(0.75 0.18 45);
+  --chart-3: oklch(0.55 0.20 290);
+  --chart-4: oklch(0.70 0.16 250);
+  --chart-5: oklch(0.65 0.18 30);
+  
+  /* Sidebar Tokens */
+  --sidebar: oklch(0.10 0.04 270);
+  --sidebar-foreground: oklch(0.88 0.02 270);
+  --sidebar-primary: oklch(0.45 0.22 270);
+  --sidebar-primary-foreground: oklch(0.98 0.01 270);
+  --sidebar-accent: oklch(0.80 0.18 45);
+  --sidebar-accent-foreground: oklch(0.10 0.04 270);
+  --sidebar-border: oklch(0.22 0.06 270);
+  --sidebar-ring: oklch(0.75 0.20 45);
+}
+
+@theme inline {
+  /* Shadcn Core Mapping */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Charts Mapping */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Sidebar Mapping */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Typography */
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  /* Radius */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans min-h-screen;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  code, pre {
+    @apply font-mono;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-primary;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40;
+  }
+}
