@@ -35,13 +35,13 @@ const TAROT_MESSAGES: string[] = [
 ];
 
 // ─── Tarot Card Symbols ───────────────────────────────────────────────────────
-const CARD_SYMBOLS = ["☽", "✦", "⚝", "☿", "♆"];
-const CARD_NAMES = [
-  "The Moon",
-  "The Star",
-  "The Pentacle",
-  "The Messenger",
-  "The Deep",
+const CARD_SYMBOLS = ["✦", "✦", "✦", "✦", "✦"];
+const CARD_NAMES: string[] = [
+  // "The Moon",
+  // "The Star",
+  // "The Pentacle",
+  // "The Messenger",
+  // "The Deep",
 ];
 
 // ─── Canvas Starfield ────────────────────────────────────────────────────────
@@ -137,11 +137,11 @@ function TarotCard({ index, symbol, name }: TarotCardProps) {
       {/* Card body */}
       <div
         className="relative w-20 h-36 sm:w-28 sm:h-48 md:w-36 md:h-60 lg:w-40 lg:h-68 rounded-2xl overflow-hidden"
-        style={{
-          background: "linear-gradient(145deg, #2d1b4e 0%, #1a0a2e 60%, #0d0520 100%)",
-          border: "1.5px solid rgba(212, 175, 100, 0.5)",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(212,175,100,0.15)",
-        }}
+          style={{
+            background: "linear-gradient(145deg, #3a245f 0%, #231038 55%, #12072a 100%)",
+            border: "1.5px solid rgba(212, 175, 100, 0.55)",
+            boxShadow: "0 8px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(212,175,100,0.18)",
+          }}
       >
         {/* Inner ornate border */}
         <div
@@ -237,13 +237,13 @@ interface RevealedCardProps {
 
 function RevealedCard({ message, onReset }: RevealedCardProps) {
   return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      style={{ background: "linear-gradient(135deg, #0d0520 0%, #1a0a2e 50%, #0d0520 100%)" }}
-    >
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        style={{ background: "linear-gradient(135deg, #12072a 0%, #231038 50%, #12072a 100%)" }}
+      >
       {/* Background radial glow */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -362,6 +362,7 @@ function RevealedCard({ message, onReset }: RevealedCardProps) {
           >
             "{message}"
           </motion.p>
+          
 
           {/* Divider */}
           <div className="flex items-center gap-3 mb-8">
@@ -535,8 +536,22 @@ export default function Index() {
       setCustomMessage(saved);
       setCustomSaved(true);
     }
+
+    // Audio should start as soon as the page opens
+    // (may be blocked by browser autoplay policy; in that case user interaction will be required)
     audioRef.current = new Audio("/exait.mp3");
+    // Single continuous playback (no repeat)
+    audioRef.current.loop = false;
+    audioRef.current.volume = 0.9;
+
+
+    audioRef.current
+      .play()
+      .catch(() => {
+        // Autoplay might be blocked
+      });
   }, []);
+
 
   const handleReveal = () => {
     const pool: string[] = [...TAROT_MESSAGES];
@@ -544,7 +559,16 @@ export default function Index() {
     const chosen = pool[Math.floor(Math.random() * pool.length)];
     setCurrentMessage(chosen);
     setPhase("revealed");
-    audioRef.current?.play().catch(() => {});
+
+    // Ensure music continues/plays when moving to revealed phase
+    const a = audioRef.current;
+    if (a) {
+      try {
+        a.play().catch(() => {});
+      } catch {
+        // ignore
+      }
+    }
   };
 
   const handleReset = () => {
@@ -560,10 +584,10 @@ export default function Index() {
   };
 
   return (
-    <div
-      className="relative min-h-screen flex flex-col items-center justify-between overflow-hidden"
-      style={{ background: "linear-gradient(160deg, #0d0520 0%, #1a0a2e 45%, #0d0520 100%)" }}
-    >
+      <div
+        className="relative min-h-screen flex flex-col items-center justify-between overflow-hidden"
+        style={{ background: "linear-gradient(160deg, rgb(18, 8, 45) 0%, rgb(74, 32, 132) 45%, rgb(18, 8, 45) 100%)" }}
+      >
       {/* Starfield */}
       <StarCanvas />
 
@@ -622,7 +646,7 @@ beyondholistic
                 color: "rgba(212,175,100,0.5)",
               }}
             >
-              The Veil Between Worlds
+              The univers may have a message for you today 
             </p>
 
             <p
@@ -633,7 +657,7 @@ beyondholistic
                 fontStyle: "italic",
               }}
             >
-              Five cards await. One holds your destiny.
+             Pause . Breath . Recieve
             </p>
 
             {/* Bottom decorative */}
@@ -696,7 +720,7 @@ beyondholistic
                   boxShadow: "0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(212,175,100,0.15)",
                 }}
               >
-✦ Pick a message ✦
+✦ Pick your message ✦
               </div>
             </motion.button>
           </motion.main>
