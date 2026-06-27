@@ -1,37 +1,155 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ─── 30 Tarot Messages ───────────────────────────────────────────────────────
-const TAROT_MESSAGES: string[] = [
-  "Come back to yourself, You are safe to be you.",
-  "You are enough, exactly as you are.",
-  "Release what no longer serve you.",
-  "Healing is happening, even if you can't see it.",
-  "Let it go with love.",
-  "You are allowed to start again.",
-  "Trust your inner voice. You already know the answer.",
-  "This is your time to bloom.",
-  "A new chapter is beginning.",
-  "Allow the change to happen, it will lead you to something better.",
-  "Say yes to the new beginnings.",
-  "All endings are also beginings.",
-  "You attract what you believe you deserve.",
-  "Your energy creates your reality.",
-  "You are the creator of your life.",
-  "Choose yourself first.",
-  "A hidden truth will soon reveal itself, be ready to listen.",
-  "Your courage will illuminate the darkest corners of doubt.",
-  "What you release now will make space for profound transformation.",
-  "Trust the rhythm of your journey, even when the melody seems unclear.",
-  "The seeds you planted in silence are beginning to bloom.",
-  "A door you thought was closed is opening for you now.",
-  "Your presence alone shifts the energy of every room you enter.",
-  "What feels like an ending is actually a beautiful new beginning.",
-  "Your vulnerability is not weakness, it is your greatest strength.",
-  "The moment you release the control, everything falls into place.",
-  "What you believe about yourself is becoming your reality.",
-  "Your light shines brightest when you stop dimming it for others.",
-  "Trust that you are exactly where you need to be at this moment.",
+type TarotMessage = { title: string; message: string };
+
+// ─── Tarot Messages (Title + Message) ─────────────────────────────────────
+const TAROT_MESSAGES: TarotMessage[] = [
+  {
+    title: "✦✦ Intuition ✦✦",
+    message:
+      "Your intuition whispers.\nYour fear shouts.\nChoose carefully which voice you follow",
+  },
+  {
+    title: "✦✦ Flow ✦✦",
+    message:
+      "Stop forcing. What belongs to you will flow toward you naturally",
+  },
+  {
+    title: "✦✦ Rest ✦✦",
+    message:
+      "Rest is not a reward. It is part of the journey.\nGive yourself a break",
+  },
+  {
+    title: "✦✦ Transformation ✦✦",
+    message:
+      "The person you are becoming could never exist without the person you once were",
+  },
+  {
+    title: "✦✦ Presence ✦✦",
+    message: "Life is happening here.\nNot yesterday. Not tomorrow. Now",
+  },
+  {
+    title: "✦✦ Trust ✦✦",
+    message: "You are exactly where you need to be",
+  },
+  {
+    title: "✦✦ Trust ✦✦",
+    message:
+      "You are not behind.\nLife is unfolding in perfect timing, even when you cannot see it",
+  },
+  {
+    title: "✦✦ Patience ✦✦",
+    message:
+      "Not everything delayed is denied. Some things simply need time to become ready",
+  },
+  {
+    title: "✦✦ Self worth ✦✦",
+    message:
+      "Your value has never depended on someone's ability to recognize it.\nMake yourself a priority.\nThe moment you begin to value yourself, the world reflects that value back to you.",
+  },
+  {
+    title: "✦✦ Gratitude ✦✦",
+    message: "Gratitude begins when you stop waiting for life to be perfect",
+  },
+  {
+    title: "✦✦ Acceptance ✦✦",
+    message:
+      "Stop comparing your journey with others.\nJust bloom as you are, exactly where you are.",
+  },
+  {
+    title: "✦✦ Receiving ✦✦",
+    message: "You cannot receive fully if you believe you are unworthy",
+  },
+  {
+    title: "✦✦ Divine timing ✦✦",
+    message: "Sometimes the greatest gift is the delay you never wanted",
+  },
+  {
+    title: "✦✦ Forgiveness ✦✦",
+    message:
+      "Forgiveness is not forgetting.\nIt is choosing not to carry the pain any longer",
+  },
+  {
+    title: "✦✦ Healing the past ✦✦",
+    message: "The past cannot be changed, but your relationship with it can",
+  },
+  {
+    title: "✦✦ New Chapter ✦✦",
+    message:
+      "Every ending deserves a new beginning.\nOpen a new Chapter",
+  },
+  {
+    title: "✦✦ Healing ✦✦",
+    message:
+      "Some apologies never come.\nYour healing does not have to wait for them",
+  },
+  {
+    title: "✦✦ Energy ✦✦",
+    message: "Your energy is your greatest currency.\nSpend it wisely",
+  },
+  {
+    title: "✦✦ Abundance ✦✦",
+    message:
+      "Abundance is not having everything.\nIt is recognizing that you already have enough to begin",
+  },
+  {
+    title: "✦✦ Self love ✦✦",
+    message:
+      "The relationship you have with yourself teaches others how to love you",
+  },
+  {
+    title: "✦✦ Love ✦✦",
+    message: "You deserve the love you keep giving away",
+  },
+  {
+    title: "✦✦ Healthy love ✦✦",
+    message: "Real love feels safe, not confusing",
+  },
+  {
+    title: "✦✦ Soul Connection ✦✦",
+    message:
+      "Some souls enter your life to stay.\nOthers come to awaken you.\nHonor every connection for the lesson, the love, or the growth it brings.\nAll brings wisdom.",
+  },
+  {
+    title: "✦✦ Growth ✦✦",
+    message: "Growth begins where comfort ends",
+  },
+  {
+    title: "✦✦ Awareness ✦✦",
+    message: "Observe before reacting",
+  },
+  {
+    title: "✦✦ Perspective ✦✦",
+    message: "Sometimes all that needs to change is the way you see it",
+  },
+  {
+    title: "✦✦ Flow ✦✦",
+    message: "When you stop forcing, life begins flowing",
+  },
+  {
+    title: "✦✦ Energy Protection ✦✦",
+    message:
+      "Not everyone deserves access to your energy.\nChoose your circle wisely.",
+  },
+  {
+    title: "✦✦ Set the intention ✦✦",
+    message: "Every creation begins with a clear intention",
+  },
+  {
+    title: "✦✦ Blessings Ahead ✦✦",
+    message:
+      "Beautiful things are making their way to you.\nWelcome them with an open heart",
+  },
+  {
+    title: "✦✦ Healing ✦✦",
+    message: "Healing takes time.\nHonor every step of your journey",
+  },
+  {
+    title: "✦✦ Angels whispers ✦✦",
+    message:
+      "You are surrounded by love, light and gentle support from your angel.\nYou are not walking this path alone.",
+  },
 ];
 
 // ─── Tarot Card Symbols ───────────────────────────────────────────────────────
@@ -236,6 +354,10 @@ interface RevealedCardProps {
 }
 
 function RevealedCard({ message, onReset }: RevealedCardProps) {
+  const parts = message.split(/\n\n+/g);
+  const title = parts[0] ?? "";
+  const body = parts.slice(1).join("\n\n");
+
   return (
       <motion.div
         className="fixed inset-0 z-50 flex items-center justify-center"
@@ -332,7 +454,7 @@ function RevealedCard({ message, onReset }: RevealedCardProps) {
               color: "rgba(212, 175, 100, 0.65)",
             }}
           >
-            Your Revelation
+            {title ? title : "Your Revelation"}
           </div>
 
           {/* Divider */}
@@ -349,19 +471,37 @@ function RevealedCard({ message, onReset }: RevealedCardProps) {
           </div>
 
           {/* Message */}
-          <motion.p
-            className="text-base sm:text-lg md:text-xl leading-relaxed mb-6 sm:mb-8"
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              color: "rgba(232, 220, 200, 0.92)",
-              fontStyle: "italic",
-            }}
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
+            className="text-base sm:text-lg md:text-xl leading-relaxed mb-6 sm:mb-8"
           >
-            "{message}"
-          </motion.p>
+            <div
+              style={{
+                fontFamily: "'Cinzel', serif",
+                fontStyle: "normal",
+                color: "rgba(212, 175, 100, 0.75)",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                marginBottom: "1rem",
+              }}
+            >
+              {title ? title : "Your Revelation"}
+            </div>
+
+            <div
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                color: "rgba(232, 220, 200, 0.92)",
+                fontStyle: "italic",
+                whiteSpace: "pre-line",
+              }}
+            >
+              {body}
+            </div>
+          </motion.div>
+
           
 
           {/* Divider */}
@@ -529,7 +669,7 @@ export default function Index() {
   const [customSaved, setCustomSaved] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Load saved custom message on mount
+  // Load saved custom message on mount + start music automatically
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -537,27 +677,54 @@ export default function Index() {
       setCustomSaved(true);
     }
 
-    // Audio should start as soon as the page opens
-    // (may be blocked by browser autoplay policy; in that case user interaction will be required)
-    audioRef.current = new Audio("/exait.mp3");
-    // Single continuous playback (no repeat)
-    audioRef.current.loop = false;
-    audioRef.current.volume = 0.9;
+    const a = new Audio("/exait.mp3");
+    a.loop = false;
+    a.volume = 0.9;
+    audioRef.current = a;
 
-
-    audioRef.current
-      .play()
-      .catch(() => {
-        // Autoplay might be blocked
+    const play = () => {
+      if (!audioRef.current) return;
+      audioRef.current.play().catch(() => {
+        // Autoplay might be blocked by the browser. We'll retry on user interaction.
       });
+    };
+
+    // Try immediately when page opens
+    play();
+
+    // Retry when user interacts (autoplay policy workaround)
+    const retry = () => {
+      play();
+      window.removeEventListener("pointerdown", retry);
+      window.removeEventListener("keydown", retry);
+    };
+
+    window.addEventListener("pointerdown", retry, { once: false });
+    window.addEventListener("keydown", retry, { once: false });
+
+    // When it finishes, restart automatically
+    const onEnded = () => {
+      play();
+    };
+    a.addEventListener("ended", onEnded);
+
+    return () => {
+      a.removeEventListener("ended", onEnded);
+      window.removeEventListener("pointerdown", retry);
+      window.removeEventListener("keydown", retry);
+    };
   }, []);
 
 
+
   const handleReveal = () => {
-    const pool: string[] = [...TAROT_MESSAGES];
-    if (customMessage) pool.push(customMessage);
+    const pool: TarotMessage[] = [...TAROT_MESSAGES];
+    if (customMessage) {
+      pool.push({ title: "✦✦ Your Prophecy ✦✦", message: customMessage });
+    }
+
     const chosen = pool[Math.floor(Math.random() * pool.length)];
-    setCurrentMessage(chosen);
+    setCurrentMessage(`${chosen.title}\n\n${chosen.message}`);
     setPhase("revealed");
 
     // Ensure music continues/plays when moving to revealed phase
@@ -650,11 +817,12 @@ beyondholistic
             </p>
 
             <p
-              className="text-xs sm:text-sm md:text-base mt-3 max-w-sm mx-auto px-4"
+              className="text-sm sm:text-base md:text-lg lg:text-xl mt-3 max-w-sm mx-auto px-4 text-center"
               style={{
                 fontFamily: "'Cormorant Garamond', serif",
-                color: "rgba(200,185,165,0.6)",
+                color: "rgba(212, 175, 100, 0.88)",
                 fontStyle: "italic",
+                textShadow: "0 0 18px rgba(212,175,100,0.25), 0 2px 10px rgba(0,0,0,0.55)",
               }}
             >
              Pause . Breath . Recieve
